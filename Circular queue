@@ -1,0 +1,61 @@
+#include<stdio.h>
+#define MAX 5
+int Cqueue[MAX];
+int front=-1;
+int rear=-1;
+void Cenqueue(int item)
+{
+    if((rear+1)%MAX==front)
+    {
+        printf("Circular Queue is full\n");
+    }
+    else
+    {
+        if(front==-1)
+        {
+            front=0;
+            rear=0;
+        }
+        else
+        {
+            rear=(rear+1)%MAX;
+        }
+        Cqueue[rear]=item;
+    }
+}
+void Cdequeue()
+{
+    int item;
+    if(front==-1)
+    {
+        printf("Queue is empty.\n");
+    }
+    else
+    {
+        item=Cqueue[front];
+        if(front==rear)
+        {
+            front=-1;
+            rear=-1;
+        }
+        else
+        {
+            front=(front+1)%MAX;
+        }
+        printf("Deleted element is %d\n",item);
+    }
+}
+int main() {
+    Cenqueue(10);
+    Cenqueue(20);
+    Cenqueue(30);
+    Cenqueue(40);
+    Cenqueue(50);
+    Cenqueue(60);
+    Cdequeue();
+    for (int i=front;i<rear+1;i++)
+    {
+        printf("%d ---",Cqueue[i]);
+    }
+    return 0;
+}
