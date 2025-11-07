@@ -1,0 +1,16 @@
+#include<stdio.h>
+#define MAX 100
+int main(){
+    int arr[]={1,4,6,9,16};
+    int length=sizeof(arr)/sizeof(arr[0]);
+    int key;
+    scanf("%d",&key);
+    for (int i=0;i<length;i++)
+    {
+        if(arr[i]==key)
+        {
+            printf("The element is found at position %d",i+1);
+        }
+    }
+    return 0;
+}
