@@ -1,0 +1,25 @@
+#include<stdio.h>
+void insertionSort(int arr[],int len)
+{
+    for(int i=1;i<len;i++)
+    {
+        int j=i;
+        int temp=arr[i];
+        while(j>0 && temp<arr[j-1])
+        {
+            arr[j]=arr[j-1];
+            j--;
+        }
+        arr[j]=temp;
+    }
+}
+int main(){
+    int arr[]={23,16,30,4,41,27,26,47,11,46};
+    int length=sizeof(arr)/sizeof(arr[0]);
+    insertionSort(arr,length);
+    for(int i=0;i<length;i++)
+    {
+        printf("%d ",arr[i]);
+    }
+    return 0;
+}
