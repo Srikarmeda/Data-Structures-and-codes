@@ -1,0 +1,66 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node{
+    int data;
+    struct node *left;
+    struct node *right;
+};
+struct node* createNode(int data){
+    struct node *newNode=(struct node*)malloc(sizeof(struct node));
+    if(newNode==NULL)
+    {
+        printf("Memory allocation is failed.\n");
+        exit(1);
+    }
+    newNode->data=data;
+    newNode->left=NULL;
+    newNode->right=NULL;
+    return newNode;
+}
+void preOrderTraversal(struct node *root)
+{
+    if(root==NULL)
+    {
+        return;
+    }
+    printf("%d ->",root->data);
+    preOrderTraversal(root->left);
+    preOrderTraversal(root->right);
+}
+void inOrderTraversal(struct node *root)
+{
+    if(root==NULL)
+    {
+        return;
+    }
+    inOrderTraversal(root->left);
+    printf("%d-> ",root->data);
+    inOrderTraversal(root->right);
+}
+void postOrderTraversal(struct node *root)
+{
+    if(root==NULL)
+    {
+        return;
+    }
+    postOrderTraversal(root->left);
+    postOrderTraversal(root->right);
+    printf("%d ->",root->data);
+}
+int main()
+{
+    struct node* root=createNode(10);
+    root->left=createNode(20);
+    root->right=createNode(30);
+    root->left->left=createNode(40);
+    root->left->right=createNode(50);
+    printf("Pre-order traversal: ");
+    preOrderTraversal(root);
+    printf("\n");
+    printf("In-order traversal: ");
+    inOrderTraversal(root);
+    printf("\n");
+    printf("Post-order traversal: ");
+    postOrderTraversal(root);
+    return 0;
+}
