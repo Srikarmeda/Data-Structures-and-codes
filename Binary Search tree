@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct Node {
+    int key;
+    struct Node* left;
+    struct Node* right;
+} Node;
+Node* createNode(int key) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    newNode->key = key;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+void inOrderTraversal(Node* root) {
+    if (root != NULL) {
+        inOrderTraversal(root->left);
+        printf("%d ", root->key);
+        inOrderTraversal(root->right);
+    }
+}
+Node* insert(Node* node, int key) {
+    if (node == NULL) {
+        return createNode(key);
+    }
+    if (key < node->key) {
+        node->left = insert(node->left, key);
+    } else if (key > node->key) {
+        node->right = insert(node->right, key);
+    }
+    return node;
+}
+Node* findMinNode(Node* node) {
+    Node* current = node;
+    while (current && current->left != NULL) {
+        current = current->left;
+    }
+    return current;
+}
+int findMin(Node* root) {
+    if (root == NULL) {
+        printf("Error: Tree is empty\n");
+        return -1;
+    }
+    Node* minNode = findMinNode(root);
+    return minNode->key;
+}
+int findMax(Node* root) {
+    if (root == NULL) {
+        printf("Error: Tree is empty\n");
+        return -1; 
+    }
+    Node* current = root;
+    while (current && current->right != NULL) {
+        current = current->right;
+    }
+    return current->key;
+}
+Node* deleteNode(Node* root, int key) {
+    if (root == NULL) {
+        return root;
+    }
+    if (key < root->key) {
+        root->left = deleteNode(root->left, key);
+    } else if (key > root->key) {
+        root->right = deleteNode(root->right, key);
+    } 
+    else {
+        if (root->left == NULL) {
+            Node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+        Node* temp = findMinNode(root->right);
+        root->key = temp->key;
+        root->right = deleteNode(root->right, temp->key);
+    }
+    return root;
+}
+void kthSmallestHelper(Node* root, int k, int* count, int* result) {
+    if (root == NULL || *result != -1) {
+        return;
+    }
+    kthSmallestHelper(root->left, k, count, result);
+    (*count)++;
+    if (*count == k) {
+        *result = root->key;
+        return;
+    }
+    kthSmallestHelper(root->right, k, count, result);
+}
+int kthSmallest(Node* root, int k) {
+    int count = 0;
+    int result = -1; 
+    kthSmallestHelper(root, k, &count, &result);
+    return result;
+}
+int main() {
+    Node* root = NULL;
+    root = insert(root, 50);
+    root = insert(root, 30);
+    root = insert(root, 20);
+    root = insert(root, 40);
+    root = insert(root, 70);
+    root = insert(root, 60);
+    root = insert(root, 80);
+    printf("Original Tree (In-order): ");
+    inOrderTraversal(root);
+    printf("\n\n");
+    printf("Find Min & Max:\n");
+    printf("Min element: %d\n", findMin(root)); // Expected: 20
+    printf("Max element: %d\n", findMax(root)); // Expected: 80
+    printf("\n");
+    printf("K-th Smallest Element:\n");
+    printf("1st smallest (k=1): %d\n", kthSmallest(root, 1)); 
+    printf("4th smallest (k=4): %d\n", kthSmallest(root, 4)); 
+    printf("7th smallest (k=7): %d\n", kthSmallest(root, 7));  
+    printf("\n");
+    printf("Testing Deletions:\n");
+    printf("Deleting 20 (leaf node)...\n");
+    root = deleteNode(root, 20);
+    printf("Tree (In-order): ");
+    inOrderTraversal(root); 
+    printf("\n\n");
+    printf("Deleting 70 (one child)...\n");
+    root = deleteNode(root, 70);
+    printf("Tree (In-order): ");
+    inOrderTraversal(root);
+    printf("\n\n");
+    printf("Deleting 50 (root, two children)...\n");
+    root = deleteNode(root, 50);
+    printf("Tree (In-order): ");
+    inOrderTraversal(root); 
+    printf("\n");
+    return 0;
+}
