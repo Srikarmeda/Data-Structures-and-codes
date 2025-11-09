@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <limits.h> // For INT_MAX
+#include <stdbool.h> // For bool type
+
+#define MAX_VERTICES 100 // Maximum vertices from your file [cite: 342]
+
+// Function to find the vertex with the minimum distance [cite: 344-353]
+// (from the set of vertices not yet processed)
+int minDistance(int dist[], bool sptSet[], int vertices) {
+    int min = INT_MAX, minIndex;
+    for (int v = 0; v < vertices; v++) {
+        if (!sptSet[v] && dist[v] < min) { // [cite: 347]
+            min = dist[v];
+            minIndex = v;
+        }
+    }
+    return minIndex;
+}
+
+// Function to print the distance array [cite: 355-360]
+void printSolution(int dist[], int vertices) {
+    printf("Vertex \tDistance from Source\n");
+    for (int i = 0; i < vertices; i++) {
+        printf("%d \t%d\n", i, dist[i]);
+    }
+}
+
+// Function that implements Dijkstra's algorithm [cite: 362-392]
+void dijkstra(int graph[MAX_VERTICES][MAX_VERTICES], int src, int vertices) {
+    int dist[MAX_VERTICES]; // Holds the shortest distance from src to i [cite: 364]
+    bool sptSet[MAX_VERTICES]; // true if vertex i is finalized [cite: 365]
+
+    // Initialize all distances as INFINITE and sptSet[] as false [cite: 367-370]
+    for (int i = 0; i < vertices; i++) {
+        dist[i] = INT_MAX;
+        sptSet[i] = false;
+    }
+
+    // Distance from source to itself is always 0 [cite: 372]
+    dist[src] = 0;
+
+    // Find the shortest path for all vertices [cite: 374]
+    for (int count = 0; count < vertices - 1; count++) {
+        // Pick the minimum distance vertex [cite: 377]
+        int u = minDistance(dist, sptSet, vertices);
+
+        // Mark the picked vertex as processed [cite: 379]
+        sptSet[u] = true;
+
+        // Update dist value of the adjacent vertices [cite: 381]
+        for (int v = 0; v < vertices; v++) {
+            // Update dist[v] only if it's not processed, there's an edge,
+            // and the new path through u is shorter
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX
+                && dist[u] + graph[u][v] < dist[v]) {
+                dist[v] = dist[u] + graph[u][v]; // [cite: 387]
+            }
+        }
+    }
+
+    // Print the constructed distance array [cite: 392]
+    printSolution(dist, vertices);
+}
+
+// Driver program [cite: 393-421]
+int main() {
+    int vertices;
+    printf("Input the number of vertices: ");
+    scanf("%d", &vertices);
+
+    if (vertices <= 0 || vertices > MAX_VERTICES) {
+        printf("Invalid number of vertices. Exiting...\n");
+        return 1;
+    }
+
+    int graph[MAX_VERTICES][MAX_VERTICES];
+    printf("Input the adjacency matrix for the graph (use 9999 for infinity):\n");
+    
+    for (int i = 0; i < vertices; i++) {
+        for (int j = 0; j < vertices; j++) {
+            scanf("%d", &graph[i][j]);
+            // Replace 9999 (or other big num) with 0 for no edge if needed
+            // But for Dijkstra, non-edges should be 0, and INT_MAX is handled.
+            // Let's assume user inputs 0 for no direct edge, and weights otherwise
+        }
+    }
+
+    int source;
+    printf("Input the source vertex: ");
+    scanf("%d", &source);
+
+    if (source < 0 || source >= vertices) {
+        printf("Invalid source vertex. Exiting...\n");
+        return 1;
+    }
+
+    dijkstra(graph, source, vertices);
+    return 0;
+}
